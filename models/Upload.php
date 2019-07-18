@@ -3,9 +3,14 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 class Upload extends Model{
-    // 上传文件
+    /**
+     * 将excel上传至服务器
+     * @return array
+     */
     public function upload_file(){
         $r=0;
         $msg="文件上传成功";
@@ -149,16 +154,20 @@ class Upload extends Model{
             "file_path"=>$filePath
         );
     }
-    // 读取excel数据,
+
+    /**
+     * 读取服务器上的excel数据
+     * @param $file 文件路径
+     * @return array|string
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Reader\Exception
+     */
     public function import_excel($file){
         $input=array();
         $en_data=array();
-        $class_system=new System;
 
-        $media_fields=$class_system->get_media_fields();
-        foreach($media_fields as $mf){
-            $table_fields[$mf["name"]]=$mf["field"];
-        }
+        $class_mediaProgramLog=new MediaProgramLog;
+        $table_fields=array_flip($class_mediaProgramLog->get_media_fields());
 
         $file = iconv("utf-8", "gb2312", $file);
 
@@ -167,7 +176,7 @@ class Upload extends Model{
         }
 
         /** @var Xlsx $objRead */
-        $objRead = \PhpOffice\PhpSpreadsheet\IOFactory::createReader('Xlsx');
+        $objRead = IOFactory::createReader('Xlsx');
 
         if (!$objRead->canRead($file)) {
             /** @var Xls $objRead */
@@ -194,7 +203,7 @@ class Upload extends Model{
         /* 取得最大的列号 */
         $columnH = $currSheet->getHighestColumn();
         /* 兼容原逻辑，循环时使用的是小于等于 */
-        $columnCnt = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($columnH);
+        $columnCnt = Coordinate::columnIndexFromString($columnH);
 
 
         /* 获取总行数 */
@@ -206,7 +215,7 @@ class Upload extends Model{
             $isNull = true;
 
             for ($_column = 1; $_column <= $columnCnt; $_column++) {
-                $cellName = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($_column);
+                $cellName = Coordinate::stringFromColumnIndex($_column);
                 $cellId   = $cellName . $_row;
                 $cell     = $currSheet->getCell($cellId);
 
