@@ -1,0 +1,60 @@
+.bdsharebuttonbox{
+    margin-top: 1em;
+}
+
+.bdshare-button-style0-32 .bds_qzone {
+    width: 46px; height: 46px;
+    background-image: url(../img/ico_shares_qzone.png);
+    background-position: 0 0;
+}
+
+.bdshare-button-style0-32 .bds_tsina {
+    width: 46px; height: 46px;
+    background-image: url(../img/ico_shares_weibo.png);
+    background-position: 0 0;
+}
+
+.bdshare-button-style0-32 .bds_tqq {
+    width: 46px; height: 46px;
+    background-image: url(../img/ico_shares_tqq.png);
+    background-position: 0 0;
+}
+
+.bdshare-button-style0-32 .bds_renren {
+    width: 46px; height: 46px;
+    background-image: url(../img/ico_shares_renren.png);
+    background-position: 0 0;
+}
+
+.bdshare-button-style0-32 .bds_weixin {
+    width: 46px; height: 46px;
+    background-image: url(../img/ico_shares_weixin.png);
+    background-position: 0 0;
+}
+
+
+@media (max-width: 360px) {
+    .bdshare-button-style0-32 a {
+        margin: 3px;
+    }
+    .bdshare-button-style0-32 .bds_qzone {
+        width: 36px; height: 36px;
+        background-size: 100%;
+    }
+    .bdshare-button-style0-32 .bds_tsina {
+        width: 36px; height: 36px;
+        background-size: 100%;
+    }
+    .bdshare-button-style0-32 .bds_tqq {
+        width: 36px; height: 36px;
+        background-size: 100%;
+    }
+    .bdshare-button-style0-32 .bds_renren {
+        width: 36px; height: 36px;
+        background-size: 100%;
+    }
+    .bdshare-button-style0-32 .bds_weixin {
+        width: 36px; height: 36px;
+        background-size: 100%;
+    }
+}

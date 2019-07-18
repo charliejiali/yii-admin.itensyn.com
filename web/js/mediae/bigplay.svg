@@ -1,0 +1,62 @@
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" preserveAspectRatio="none" x="0px" y="0px" width="100px" height="200px" viewBox="0 0 100 200">
+<defs>
+<radialGradient id="Gradient_1" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="45" fx="0" fy="0" gradientTransform="matrix( 1, 0, 0, 1, 49.95,150.05) " spreadMethod="pad">
+<stop  offset="69.80392156862744%" stop-color="#BBBBBB" stop-opacity="0"/>
+
+<stop  offset="70.19607843137256%" stop-color="#BBBBBB" stop-opacity="0.011764705882352941"/>
+
+<stop  offset="85.09803921568627%" stop-color="#BBBBBB"/>
+
+<stop  offset="100%" stop-color="#BBBBBB" stop-opacity="0"/>
+</radialGradient>
+
+<g id="Layer0_0_MEMBER_0_FILL">
+<path fill="url(#Gradient_1)" stroke="none" d="
+M 5 150
+Q 5 168.7 18.15 181.85 31.35 195 50 195 68.65 195 81.8 181.85 95 168.65 95 150 95 131.35 81.8 118.2 68.65 105 50 105 31.35 105 18.15 118.2 5 131.35 5 150
+M 50 122
+Q 61.6 122 69.8 130.2 78 138.4 78 150 78 161.6 69.8 169.8 61.6 178 50 178 38.4 178 30.2 169.8 22 161.65 22 150 22 138.4 30.2 130.2 38.4 122 50 122 Z"/>
+</g>
+
+<g id="Layer0_1_MEMBER_0_FILL">
+<path fill="#FFF200" stroke="none" d="
+M 72.5 49.5
+L 38.75 30.05 38.75 69 72.5 49.5 Z"/>
+</g>
+
+<g id="Layer0_2_MEMBER_0_FILL">
+<path fill="#FFF200" stroke="none" d="
+M 72.5 149.5
+L 38.75 130.05 38.75 169 72.5 149.5 Z"/>
+</g>
+
+<path id="Layer0_1_MEMBER_1_1_STROKES" stroke="#FFF200" stroke-width="5" stroke-linejoin="miter" stroke-linecap="butt" stroke-miterlimit="4" fill="none" d="
+M 13 50.5
+Q 13 34.95 23.95 24 34.95 13 50.5 13 66.05 13 77 24 88 35 88 50.5 88 66.05 77 77.05 66.05 88 50.5 88 34.95 88 23.95 77.05 13 66.05 13 50.5 Z"/>
+
+<path id="Layer0_2_MEMBER_1_1_STROKES" stroke="#FFF200" stroke-width="5" stroke-linejoin="miter" stroke-linecap="butt" stroke-miterlimit="4" fill="none" d="
+M 13 150.5
+Q 13 134.95 23.95 124 34.95 113 50.5 113 66.05 113 77 124 88 135 88 150.5 88 166.05 77 177.05 66.05 188 50.5 188 34.95 188 23.95 177.05 13 166.05 13 150.5 Z"/>
+</defs>
+
+<g transform="matrix( 1, 0, 0, 1, 0,0) ">
+<use xlink:href="#Layer0_0_MEMBER_0_FILL"/>
+</g>
+
+<g transform="matrix( 0.82965087890625, 0, 0, 0.82928466796875, 9.85,9.1) ">
+<use xlink:href="#Layer0_1_MEMBER_0_FILL"/>
+</g>
+
+<g transform="matrix( 1, 0, 0, 1, 0,0) ">
+<use xlink:href="#Layer0_1_MEMBER_1_1_STROKES"/>
+</g>
+
+<g transform="matrix( 0.8296356201171875, 0, 0, 0.8292694091796875, 9.85,26.15) ">
+<use xlink:href="#Layer0_2_MEMBER_0_FILL"/>
+</g>
+
+<g transform="matrix( 1, 0, 0, 1, 0,0) ">
+<use xlink:href="#Layer0_2_MEMBER_1_1_STROKES"/>
+</g>
+</svg>
