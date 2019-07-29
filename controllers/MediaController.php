@@ -1,7 +1,7 @@
 <?php
 namespace app\controllers;
 
-use app\models\System;
+use app\models\old;
 use PHPUnit\Framework\Exception;
 use Yii;
 use app\models\MediaInput;
@@ -231,17 +231,22 @@ class MediaController extends UserController{
             )
         ));
     }
-    // 上传excel
+
+    /**
+     * 上传excel
+     */
     public function actionUploadExcel(){
         $r=0;
         $msg="";
         do{
+            // 将excel上传至服务器
             $class_upload=new Upload;
             $result=$class_upload->upload_file();
             if($result["r"]==0){
                 $msg=$result["msg"];
                 break;
             }
+            // 读取服务器上excel数据
             $file_path=$result["file_path"];
             $result=$class_upload->import_excel( $file_path);
             unlink($file_path);
@@ -249,6 +254,7 @@ class MediaController extends UserController{
                 $msg=$result;
                 break;
             }
+            // 将数据写入数据库
             $class_mediaProgramLog=new MediaProgramLog;
             foreach($result as $input){
                 $result=$class_mediaProgramLog->add($input);
@@ -348,7 +354,7 @@ class MediaController extends UserController{
         $result=$class_mediaProgamLog->get_list(array("status"=>"0","user_id"=>"0"));
         $results=$result["data"];
 
-        $class_system=new System;
+        $class_system=new old;
         $media_fields=$class_system->get_media_fields();
 
         $class_mediaUnvalid=new MediaUnvalid;

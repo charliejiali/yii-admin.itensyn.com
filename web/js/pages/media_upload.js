@@ -45,6 +45,7 @@ $(document).ready(function(){
     $('#export').on('click',function(){
         window.open('/media/export-upload');
     });
+
     $('#audit').on('click',function(){
         $.post('/media/input-add',{
             date:$('#date').val(),
@@ -88,8 +89,6 @@ $(document).ready(function(){
         var media_id=temp[1];
         make_upload(button_id,media_id,type);
     });
-
-
 
     function make_upload(button_id,media_id,type){
         var mime_type={};
@@ -135,4 +134,4 @@ $(document).ready(function(){
             });
         });
     }
-})
+});

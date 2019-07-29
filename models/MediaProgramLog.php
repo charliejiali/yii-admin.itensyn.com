@@ -7,7 +7,43 @@ use yii\db\Query;
 use yii\base\Model;
 
 class MediaProgramLog extends Model{
-    // 添加一条剧目信息
+    // 媒体有效字段
+    private $media_fields=array(
+        "program_name"=>"剧目名称",
+        "program_default_name"=>"剧目原名",
+        "type"=>"资源类型",
+        "play_time"=>"播出时间",
+        "platform"=>"媒体平台",
+        "start_time"=>"开播时间",
+        "copyright"=>"版权情况",
+        "start_type"=>"播出状态",
+        "satellite"=>"播出卫视",
+        "creator"=>"主创/嘉宾",
+        "content_type"=>"内容类型",
+        "team"=>"制作团队",
+        "intro"=>"简介",
+        "play1"=>"本季预估播放量",
+        "play2"=>"累计播放量",
+        "play3"=>"集数/期数",
+        "play4"=>"已播集数",
+        "play5"=>"实际单集播放量",
+        "play6"=>"本季预估单集播放量",
+    );
+
+    /**
+     * 获取媒体有效字段
+     * @return array
+     */
+    public function get_media_fields(){
+        return $this->media_fields;
+    }
+
+    /**
+     * 上传一条剧目信息
+     * @param $input array
+     * @return array
+     * @throws \yii\db\Exception
+     */
     public function add($input){
         $class_mediaRegex=new MediaRegex;
         $class_mediaUnvalid=new MediaUnvalid;
@@ -15,8 +51,8 @@ class MediaProgramLog extends Model{
         $msg="";
 
         do{
-            $program_default_name=$input["program_default_name"];
-            $platform=$input["platform"];
+            $program_default_name=trim($input["program_default_name"]);
+            $platform=trim($input["platform"]);
 
             if(!MediaRegex::check_program_default_name($program_default_name)){
                 $msg="剧目原名不正确";
@@ -238,7 +274,7 @@ class MediaProgramLog extends Model{
 
     // 获取状态(新增,未更新,更新,删除)
     public function get_type_status($program){
-        $class_system=new System;
+        $class_system=new old;
         $class_mediaProgram=new MediaProgram;
         $media_fields=$class_system->get_media_fields();
         foreach($media_fields as $m){

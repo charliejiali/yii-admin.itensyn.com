@@ -5,7 +5,7 @@ use Yii;
 use yii\db\Query;
 use yii\base\Model;
 
-class System extends Model{
+class old extends Model{
     public function get_media_fields(){
         return (new Query)
             ->select('*')
