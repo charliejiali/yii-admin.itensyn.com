@@ -114,6 +114,11 @@ class MediaProgramLog extends Model{
         return array("r"=>$r,"msg"=>$msg);
     }
 
+    /**
+     * 通过id获取剧目信息
+     * @param $media_id
+     * @return array|bool
+     */
     public function get_by_id($media_id){
         return (new Query)
             ->select('*')
@@ -170,6 +175,12 @@ class MediaProgramLog extends Model{
     public function update($data,$where){
         return Yii::$app->db->createCommand()->update('media_program_log',$data,$where)->execute();
     }
+
+    /**
+     * 删除媒体剧目
+     * @param $media_id
+     * @throws \yii\db\Exception
+     */
     public function delete($media_id){
         Yii::$app->db->createCommand()->delete('media_program_log',array("media_id"=>$media_id))->execute();
     }

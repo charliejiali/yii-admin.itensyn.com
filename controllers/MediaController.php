@@ -295,8 +295,8 @@ class MediaController extends UserController{
             }
             $file_path=$result["file_path"];
             $file_name=$result["file_name"];
-            $class_mediaAttach=new MediaAttach;
-            $result=$class_mediaAttach->add($media_id,$type,$file_name,$file_path);
+            $class_mediaAttachLog=new MediaAttachLog;
+            $result=$class_mediaAttachLog->add($media_id,$type,$file_name,$file_path);
             if($result!=true){
                 $msg=$result;
                 break;

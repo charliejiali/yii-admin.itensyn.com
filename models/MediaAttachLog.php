@@ -7,7 +7,11 @@ use yii\db\Query;
 use yii\base\Model;
 
 class MediaAttachLog extends Model{
-    // 获取某个剧目所有附件
+    /**
+     * 获取某个剧目所有附件
+     * @param $media_id
+     * @return array
+     */
     public static function get_all($media_id){
         return (new Query)
             ->select('*')
@@ -15,15 +19,26 @@ class MediaAttachLog extends Model{
             ->where(['=','media_id',$media_id])
             ->all();
     }
-    // 删除某个剧目所有附件
+
+    /**
+     * 删除某个剧目所有附件
+     * @param $media_id
+     * @throws \yii\db\Exception
+     */
     public function delete($media_id){
         Yii::$app->db->createCommand()->delete('media_attach_log',array("media_id"=>$media_id))->execute();
     }
 
 
-
-
-
+    /**
+     * 上传附件
+     * @param $media_id
+     * @param $type
+     * @param $name
+     * @param $file_path
+     * @return bool|string
+     * @throws \yii\db\Exception
+     */
     public function add($media_id,$type,$name,$file_path){
         $old=(new Query)
             ->select('*')
