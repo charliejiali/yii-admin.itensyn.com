@@ -272,7 +272,11 @@ class MediaController extends UserController{
             "msg"=>$msg
         ));
     }
-    // 上传海报,资源包,视频
+
+    /**
+     * 上传海报,资源包,视频
+     * @throws \yii\db\Exception
+     */
     public function actionUploadAttach(){
         $r=0;
         $msg="";

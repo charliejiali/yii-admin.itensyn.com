@@ -25,6 +25,16 @@ class MediaAttach extends Model{
         Yii::$app->db->createCommand()->delete('media_attach_log',array("media_id"=>$media_id))->execute();
         unlink($path);
     }
+
+    /**
+     * 保存文件信息
+     * @param $media_id 剧目id
+     * @param $type 类型(剧照、视频、招商资源包)
+     * @param $name 名称
+     * @param $file_path 路径
+     * @return bool|string
+     * @throws \yii\db\Exception
+     */
     public function add($media_id,$type,$name,$file_path){
         $old=(new Query)
             ->select('*')
