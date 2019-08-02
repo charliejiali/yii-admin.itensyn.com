@@ -4,7 +4,18 @@
     $this->registerJsFile('/js/plupload.full.min.js');
     $this->registerJsFile('/js/pages/media_upload.js');
 
-function csubstr( $str, $start = 0, $length, $charset = "utf-8", $suffix = true ) {
+    $upload_buttons=array(
+        "poster","resource","video"
+    );
+    $cols=array(
+        "program_name","program_default_name", "type",
+        "play_time", "platform", "start_time",
+        "copyright", "start_type", "satellite",
+        "creator", "content_type", "team",
+        "intro", "play1", "play3", "play6"
+    );
+
+    function csubstr( $str, $start = 0, $length, $charset = "utf-8", $suffix = true ) {
     if ( function_exists( "mb_substr" ) ) {
         if ( mb_strlen( $str, $charset ) <= $length ) {
             return $str;
@@ -29,17 +40,6 @@ function csubstr( $str, $start = 0, $length, $charset = "utf-8", $suffix = true 
 
     return $slice;
 }
-
-$upload_buttons=array(
-    "poster","resource","video"
-);
-$cols=array(
-    "program_name","program_default_name", "type",
-    "play_time", "platform", "start_time",
-    "copyright", "start_type", "satellite",
-    "creator", "content_type", "team",
-    "intro", "play1", "play3", "play6"
-);
 ?>
 <?= $this->render("../module/head_tag.php"); ?>
 <div class="wrap">
@@ -51,7 +51,7 @@ $cols=array(
 
         <div class="content">
             <div>
-                <button type="button" class="pure-btn <?php if(count($unvalids)>0){echo "pure-btn-disabled";}?> " id="<?php if(count($unvalids)===0){echo "audit";}?>" style="width: 100px; margin-right: 1em;">上传</button>
+                <button type="button" class="pure-btn <?php if($page_info["list_count"]==0||count($unvalids)>0){echo "pure-btn-disabled";}?> " id="<?php if($page_info["list_count"]!=0&&count($unvalids)===0){echo "audit";}?>" style="width: 100px; margin-right: 1em;">上传</button>
                 <button id="export" type="button" class="pure-btn">导出录入单</button>
             </div>
             <br class="clear">

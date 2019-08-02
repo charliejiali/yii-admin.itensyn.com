@@ -7,13 +7,13 @@ use yii\db\Query;
 use yii\base\Model;
 
 class MediaAttach extends Model{
-    public static function get_log($media_id){
-        return (new Query)
-            ->select('*')
-            ->from('media_attach_log')
-            ->where(['=','media_id',$media_id])
-            ->all();
-    }
+//    public static function get_log($media_id){
+//        return (new Query)
+//            ->select('*')
+//            ->from('media_attach_log')
+//            ->where(['=','media_id',$media_id])
+//            ->all();
+//    }
     public static function get_all($media_id){
         return (new Query)
             ->select('*')

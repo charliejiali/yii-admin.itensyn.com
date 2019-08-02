@@ -180,7 +180,11 @@ class MediaController extends UserController{
     }
 
     // 补充媒体数据
-    // 补充媒体数据页面
+
+    /**
+     * 补充媒体数据页面
+     * @return string
+     */
     public function actionUploadList(){
         $pageNavSub="23";
         $unvalids=array();
@@ -209,7 +213,7 @@ class MediaController extends UserController{
                     }
 
                 }
-                $results=MediaAttach::get_log($media_id);
+                $results=MediaAttachLog::get_all($media_id);
                 if(count($results)>0){
                     foreach($results as $r){
                         $attachs[$media_id][$r["type"]]="/temp/".$r["name"];
@@ -312,7 +316,11 @@ class MediaController extends UserController{
             "path"=>$path
         ));
     }
-    // 删除某个剧目及其所有附件
+
+    /**
+     * 删除某个剧目及其所有附件
+     * @throws \yii\db\Exception
+     */
     public function actionDeleteLog(){
         $r=0;
         $msg="";
@@ -352,71 +360,25 @@ class MediaController extends UserController{
 
         echo json_encode(array("r"=>$r,"msg"=>$msg));
     }
-    // 导出excel
+
+    /**
+     * excel导出
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
     public function actionExportUpload(){
         $class_mediaProgamLog=new MediaProgramLog;
         $result=$class_mediaProgamLog->get_list(array("status"=>"0","user_id"=>"0"));
         $results=$result["data"];
 
-        $class_system=new old;
-        $media_fields=$class_system->get_media_fields();
+        $media_fields=$class_mediaProgamLog->get_media_fields();
+        unset($media_fields["play2"]);
+        unset($media_fields["play4"]);
+        unset($media_fields["play5"]);
+        unset($media_fields["play6"]);
 
-        $class_mediaUnvalid=new MediaUnvalid;
-
-        if($results){
-            $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet;
-            $spreadsheet->setActiveSheetIndex(0);
-
-            $row=1;
-            $col=1;
-            $field_array=array();
-            foreach($media_fields as $field){
-                $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $field["name"]);
-                $field_array[$col]=$field["field"];
-                $col++;
-            }
-
-            $row++;
-
-            foreach($results as $result){
-                $col=1;
-
-                $unvalid=array();
-                $media_id=$result["media_id"];
-                $fields=$class_mediaUnvalid->get_by_id($media_id);
-
-                if($fields){
-                    foreach($fields as $f){
-                        $unvalid[]=$f["field"];
-                    }
-                }
-
-                foreach($field_array as $f){
-                    $column = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($col);
-                    $cell = $column.$row;
-
-                    $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $result[$f]);
-
-                    if(in_array($f,$unvalid)){
-                        $spreadsheet->getActiveSheet()->getStyle($cell)
-                            ->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
-                        $spreadsheet->getActiveSheet()->getStyle($cell)
-                            ->getFill()->getStartColor()->setRGB('FFFF00');
-                    }
-                    $col++;
-                }
-                $row++;
-            }
-
-            $spreadsheet->setActiveSheetIndex(0);
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="'.date("YmdHis").'.xlsx"');
-            header('Cache-Control: max-age=0');
-            $objWriter=new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
-            $objWriter->save('php://output');
-
-        }
-        exit();
+        $class_upload=new Upload;
+        $class_upload->export_excel($results,$media_fields,'media');
     }
     // 生成录入单
     public function actionInputAdd(){

@@ -3,6 +3,7 @@ namespace app\models;
 
 use Yii;
 use yii\base\Model;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
@@ -243,5 +244,72 @@ class Upload extends Model{
             }
         }
         return $input;
+    }
+
+    /**
+     * 生成excel
+     * @param $data array 源数据
+     * @param $fields array 字段
+     * @param $type string media|tensyn
+     * @throws \PhpOffice\PhpSpreadsheet\Exception
+     * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+     */
+    public function export_excel($data,$fields,$type){
+        if($data){
+            if($type==='media'){
+                $class_unvalid=new MediaUnvalid;
+            }else{
+                $class_unvalid=new TensynUnvalid;
+            }
+            $spreadsheet = new Spreadsheet;
+            $spreadsheet->setActiveSheetIndex(0);
+
+            $row=1;
+            $col=1;
+            $field_array=array();
+            foreach($fields as $k=>$v){
+                $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $v);
+                $field_array[$col]=$k;
+                $col++;
+            }
+
+            $row++;
+
+            foreach($data as $d){
+                $col=1;
+
+                $unvalid=array();
+                $fields=$class_unvalid->get_all($d["media_id"]);
+
+                if($fields){
+                    foreach($fields as $f){
+                        $unvalid[]=$f["field"];
+                    }
+                }
+
+                foreach($field_array as $f){
+                    $column = Coordinate::stringFromColumnIndex($col);
+                    $cell = $column.$row;
+
+                    $spreadsheet->getActiveSheet()->setCellValueByColumnAndRow($col, $row, $d[$f]);
+
+                    if(in_array($f,$unvalid)){
+                        $spreadsheet->getActiveSheet()->getStyle($cell)
+                            ->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID);
+                        $spreadsheet->getActiveSheet()->getStyle($cell)
+                            ->getFill()->getStartColor()->setRGB('FFFF00');
+                    }
+                    $col++;
+                }
+                $row++;
+            }
+
+            $spreadsheet->setActiveSheetIndex(0);
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="'.date("YmdHis").'.xlsx"');
+            header('Cache-Control: max-age=0');
+            $objWriter=new \PhpOffice\PhpSpreadsheet\Writer\Xlsx($spreadsheet);
+            $objWriter->save('php://output');
+        }
     }
 }

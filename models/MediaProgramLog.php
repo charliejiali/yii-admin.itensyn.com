@@ -126,6 +126,14 @@ class MediaProgramLog extends Model{
             ->where(['=','media_id',$media_id])
             ->one();
     }
+
+    /**
+     * 获取列表
+     * @param $filters array
+     * @param bool $offset int
+     * @param bool $pagecount int
+     * @return array
+     */
     public function get_list($filters,$offset=false,$pagecount=false){
         $query=(new Query)
             ->select('*')
