@@ -79,6 +79,7 @@ class MediaProgramLog extends Model{
             try{
                 if($media_old===false){
                     $input["user_id"]=0;
+                    $input["delete_status"]=0;
                     Yii::$app->db->createCommand()->insert('media_program_log',$input)->execute();
                     $media_id=Yii::$app->db->getLastInsertID();
                 }else{
@@ -291,49 +292,56 @@ class MediaProgramLog extends Model{
         }
     }
 
-    // 获取状态(新增,未更新,更新,删除)
+    /**
+     * 获取状态(新增,未更新,更新,删除)
+     * @param $program
+     * @return int
+     */
     public function get_type_status($program){
-        $class_system=new old;
-        $class_mediaProgram=new MediaProgram;
-        $media_fields=$class_system->get_media_fields();
-        foreach($media_fields as $m){
-            $valid_field[]=$m["field"];
-        }
+//        $class_system=new old;
+
+//        $media_fields=$class_system->get_media_fields();
+
+//        foreach($media_fields as $m){
+//            $valid_field[]=$m["field"];
+//        }
 //        $valid_field=array(
 //            "program_name","program_default_name","type","play_time",
 //            "platform","start_time","copyright","start_type","satellite","creator",
 //            "content_type","team","intro","play1","play3","play6"
 //        );
-        $media_id=$program["media_id"];
+
+        $class_mediaProgram=new MediaProgram;
+        $media_fields=$this->get_media_fields();
+        $valid_field=array_keys($media_fields);
+        unset($valid_field["play2"]);
+        unset($valid_field["play4"]);
+        unset($valid_field["play5"]);
+
         $program_default_name=$program["program_default_name"];
         $platform=$program["platform"];
-        $valid_program=$class_mediaProgram->get($program_default_name,$platform);
+        $online_program=$class_mediaProgram->get($program_default_name,$platform);
 
-        if($valid_program===false){
-            $old=(new Query)
+        if($online_program===false){
+            $deleted_program=(new Query)
                 ->select('*')
                 ->from('media_program_log')
                 ->where(array('=','program_default_name',$program_default_name))
                 ->andWhere(array('=','platform',$platform))
                 ->andWhere(array('=','delete_status',1))
                 ->all();
-            if(count($old)>0){
+            if(count($deleted_program)>0){
                 $status=-1;
             }else{
                 $status=0;
             }
         }else{
-            $diff=false;
+            $status=1;
             foreach($valid_field as $v){
-                if(trim($program[$v])!=trim($valid_program[$v])){
-                    $diff=true;
+                if(trim($program[$v])!=trim($online_program[$v])){
+                    $status=2;
                     break;
                 }
-            }
-            if($diff){
-                $status=2;
-            }else{
-                $status=1;
             }
         }
         return $status;

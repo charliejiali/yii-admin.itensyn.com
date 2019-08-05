@@ -6,6 +6,11 @@ use yii\db\Query;
 use yii\base\Model;
 
 class MediaUser extends Model{
+    /**
+     * 获取媒体信息
+     * @param $options array 过滤条件
+     * @return array|bool
+     */
     public function get($options){
         $query=(new Query)
             ->select('*')
@@ -16,6 +21,7 @@ class MediaUser extends Model{
                 switch($k){
                     case 'platform':
                         $query->andWhere(['=','platform',$v]);
+                        break;
                 }
             }
         }

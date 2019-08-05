@@ -49,12 +49,16 @@ class MediaInput extends Model{
 //        return $r;
 //    }
 
-    // 生成录入单名称
-    public function make_name($date,$user_id){
+    /**
+     * 生成录入单名称
+     * @param $user_id string
+     * @return string
+     */
+    public function make_name($user_id){
         $input=(new Query)
             ->select('*')
             ->from('media_input')
-            ->where(array('=','create_date',$date))
+            ->where(array('=','create_date',date("Y-m-d")))
             ->andWhere(array('=','user_id',$user_id))
             ->orderBy(array('input_id'=>SORT_DESC))
             ->one();
@@ -65,7 +69,16 @@ class MediaInput extends Model{
         }
         return $input_name;
     }
-    // 创建录入单
+
+    /**
+     * 创建录入单
+     * @param $user_id string
+     * @param $input_name string 录入单名称
+     * @param $platform string 媒体平台
+     * @param $remark string 备注
+     * @param $medias array 剧目数据
+     * @throws \yii\db\Exception
+     */
     public function create($user_id,$input_name,$platform,$remark,$medias){
         $class_mediaUnvalid=new MediaUnvalid;
         $class_mediaProgramLog=new MediaProgramLog;

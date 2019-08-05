@@ -45,7 +45,7 @@ $(document).ready(function(){
     $('#export').on('click',function(){
         window.open('/media/export-upload');
     });
-
+    // 上传数据
     $('#audit').on('click',function(){
         $.post('/media/input-add',{
             date:$('#date').val(),

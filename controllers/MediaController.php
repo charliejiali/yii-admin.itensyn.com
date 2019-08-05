@@ -13,6 +13,8 @@ use app\models\MediaAttach;
 use app\models\MediaUser;
 use app\models\Upload;
 
+use app\models\Pdf;
+
 class MediaController extends UserController{
     public $pageTitle="媒体数据";
     public $pageNavId="2";
@@ -179,8 +181,8 @@ class MediaController extends UserController{
         ));
     }
 
-    // 补充媒体数据
 
+    // 补充媒体数据
     /**
      * 补充媒体数据页面
      * @return string
@@ -235,7 +237,6 @@ class MediaController extends UserController{
             )
         ));
     }
-
     /**
      * 上传excel
      */
@@ -276,7 +277,6 @@ class MediaController extends UserController{
             "msg"=>$msg
         ));
     }
-
     /**
      * 上传海报,资源包,视频
      * @throws \yii\db\Exception
@@ -316,7 +316,6 @@ class MediaController extends UserController{
             "path"=>$path
         ));
     }
-
     /**
      * 删除某个剧目及其所有附件
      * @throws \yii\db\Exception
@@ -360,7 +359,6 @@ class MediaController extends UserController{
 
         echo json_encode(array("r"=>$r,"msg"=>$msg));
     }
-
     /**
      * excel导出
      * @throws \PhpOffice\PhpSpreadsheet\Exception
@@ -387,8 +385,6 @@ class MediaController extends UserController{
         $post=Yii::$app->request->post();
         $date=$post["date"];
         $remark=$post["remark"];
-        $default_date=date("Y-m-d");
-        $default_time=date("Y-m-d H:i:s");
 
         do{
             $class_mediaProgamLog=new MediaProgramLog;
@@ -398,17 +394,20 @@ class MediaController extends UserController{
                 $msg="无数据";
                 break;
             }
-            $this_platform='';
+//            $this_platform='';
             $class_mediaInput=new MediaInput;
             $class_mediaUser=new MediaUser;
 
             $media_data=array();
             foreach($programs as $program){
                 $platform=trim($program["platform"]);
-                if($this_platform!==$platform){
+                if(!isset($media_data[$platform])){
                     $media_data[$platform]=array();
-                    $this_platform=$platform;
                 }
+//                if($this_platform!==$platform){
+//                    $media_data[$platform]=array();
+//                    $this_platform=$platform;
+//                }
                 $media_data[$platform][]=$program;
             }
 
@@ -417,7 +416,7 @@ class MediaController extends UserController{
                 foreach($media_data as $platform=>$medias){
                     $user=$class_mediaUser->get(array("platform"=>$platform));
                     $user_id=$user["user_id"];
-                    $input_name=$class_mediaInput->make_name($default_date,$user_id);
+                    $input_name=$class_mediaInput->make_name($user_id);
                     $class_mediaInput->create($user_id,$input_name,$platform,$remark,$medias);
                 }
                 $transaction->commit();
@@ -434,7 +433,6 @@ class MediaController extends UserController{
             "r"=>$r,
             "msg"=>$msg
         ));
-
     }
 
     // 剧目列表
