@@ -109,7 +109,12 @@ class Crawler extends Model{
             "page_count"=>$page_count
         );
     }
-    // 通过剧目名称获取视频设置
+
+    /**
+     * 通过剧目名称获取视频设置
+     * @param $name string 剧目名称
+     * @return array|bool
+     */
     public function get_video_by_name($name){
         return (new Query)
             ->select('*')
@@ -117,7 +122,12 @@ class Crawler extends Model{
             ->where(array('=','program_name',$name))
             ->one();
     }
-    // 添加
+    /**
+     * 创建视频爬虫基本信息
+     * @param $name string 剧目原名
+     * @param $start_type string 播放状态
+     * @throws \yii\db\Exception
+     */
     public function add_video($name,$start_type){
         Yii::$app->db->createCommand()->insert('crawler_video',array(
             "program_name"=>$name,

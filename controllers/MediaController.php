@@ -20,7 +20,11 @@ class MediaController extends UserController{
     public $pageNavId="2";
 
     // 待审核录入单
-    // 待审核录入单页面
+
+    /**
+     * 待审核录入单页面
+     * @return string
+     */
     public function actionInputList(){
         $pageNavSub="21";
 
@@ -50,7 +54,10 @@ class MediaController extends UserController{
             )
         ));
     }
-    // 录入单审批页面
+    /**
+     * 录入单审批页面
+     * @return string
+     */
     public function actionInputAuditList(){
         $pageNavSub="22";
 
@@ -78,7 +85,7 @@ class MediaController extends UserController{
             foreach($list as $l){
                 $at=array();
                 $media_id=$l["media_id"];
-                $results=MediaAttach::get_log($media_id);
+                $results=MediaAttachLog::get_all($media_id);
                 if(count($results)>0){
                     foreach($results as $r){
                         $at[]=$r["type"];
@@ -125,7 +132,10 @@ class MediaController extends UserController{
             )
         ));
     }
-    // 审批剧目
+    /**
+     * 审批剧目
+     * @throws \yii\db\Exception
+     */
     public function actionMediaAudit(){
         $post=Yii::$app->request->post();
         $id=$post["id"];
@@ -141,6 +151,7 @@ class MediaController extends UserController{
         $pass=0;
         $fail=0;
         $r=0;
+        $update=array();
         $msg="操作失败";
 
         do{
@@ -378,7 +389,10 @@ class MediaController extends UserController{
         $class_upload=new Upload;
         $class_upload->export_excel($results,$media_fields,'media');
     }
-    // 生成录入单
+    /**
+     * 生成录入单
+     * @throws \yii\db\Exception
+     */
     public function actionInputAdd(){
         $r=0;
         $msg=array();

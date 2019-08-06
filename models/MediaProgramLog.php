@@ -193,6 +193,13 @@ class MediaProgramLog extends Model{
     public function delete($media_id){
         Yii::$app->db->createCommand()->delete('media_program_log',array("media_id"=>$media_id))->execute();
     }
+    /**
+     * 审批剧目（支持多剧目）
+     * @param $id string 剧目id
+     * @param $type string 审核状态 yes|no
+     * @return array
+     * @throws \yii\db\Exception
+     */
     public function audit($id,$type){
         $ids=explode(",",$id);
         switch($type){
@@ -222,10 +229,15 @@ class MediaProgramLog extends Model{
             "msg"=>$msg
         );
     }
+
+    /**
+     * 上线媒体剧目
+     * @param $media array 剧目信息
+     */
     public function set_online($media){
         $class_crawler=new Crawler;
         $class_tensynName=new TensynName;
-        $class_mediaAttach=new MediaAttach;
+        $class_mediaAttachLog=new MediaAttachLog;
         $class_mediaProgram=new MediaProgram;
         $class_program=new Program;
 
@@ -246,12 +258,15 @@ class MediaProgramLog extends Model{
         if(!$crawler_video){
             $class_crawler->add_video($program_default_name,$media["start_type"]);
         }
+
         // 添加腾信名称
         $tensyn_name=$class_tensynName->get($program_default_name,$platform);
         if(!$tensyn_name){
             $class_tensynName->add($program_default_name,$platform);
         }
-        $class_mediaAttach->set_online($media_id,$program_default_name,$platform);
+        // 上线附件
+        $class_mediaAttachLog->set_online($media_id,$program_default_name,$platform);
+
         // 判断剧目状态,是否下架剧目
         $start_type=trim($media["start_type"]);
         if($start_type==="播出中"||$start_type==="已播完"){

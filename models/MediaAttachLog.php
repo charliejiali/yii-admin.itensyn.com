@@ -19,7 +19,6 @@ class MediaAttachLog extends Model{
             ->where(['=','media_id',$media_id])
             ->all();
     }
-
     /**
      * 删除某个剧目所有附件
      * @param $media_id
@@ -28,8 +27,6 @@ class MediaAttachLog extends Model{
     public function delete($media_id){
         Yii::$app->db->createCommand()->delete('media_attach_log',array("media_id"=>$media_id))->execute();
     }
-
-
     /**
      * 上传附件
      * @param $media_id
@@ -75,31 +72,32 @@ class MediaAttachLog extends Model{
         }
         return true;
     }
+    /**
+     * 上线剧目附件
+     * @param $media_id string id
+     * @param $program_default_name string 剧目原名
+     * @param $platform string 媒体平台
+     * @throws \yii\db\Exception
+     */
     public function set_online($media_id,$program_default_name,$platform){
+        $class_mediaAttach=new MediaAttach;
         $transaction=Yii::$app->db->beginTransaction();
         try{
-            $attachs=$this->get_log($media_id);
+            $attachs=$this->get_all($media_id);
             if(count($attachs)>0){
+                // 有新上传附件
                 foreach($attachs as $attach){
                     $type=$attach["type"];
                     $current_url=$attach["url"];
                     $target_url="/".$type."/".$attach["name"];
-                    $old_attach=(new Query)
-                        ->select('*')
-                        ->from('media_attach')
-                        ->where(array('=','type',$type))
-                        ->andWhere(array('=','program_default_name',$program_default_name))
-                        ->andWhere(array('=','platform',$platform))
-                        ->one();
+                    $old_attach=$class_mediaAttach->get_one($program_default_name,$platform,$type);
                     if(!$old_attach){
+                        // 线上无当前类型附件，直接上传
                         $attach["url"]=$target_url;
-                        Yii::$app->db->createCommand()->insert('media_attach',$attach)->execute();
+                        $class_mediaAttach->add($attach);
                     }else{
-                        Yii::$app->db->createCommand()->update('media_attach',array(
-                            "media_id"=>$media_id,"name"=>$attach["name"],"url"=>$target_url
-                        ),array(
-                            "platform"=>$platform,"program_default_name"=>$program_default_name,"type"=>$type
-                        ))->execute();
+                        // 线上有当前类型附件，更新数据
+                       $class_mediaAttach->update($media_id,$target_url,$program_default_name,$platform,$type,$attach);
                     }
                     if(!copy(Yii::$app->params['UPLOAD_DIR'].$current_url,Yii::$app->params['UPLOAD_DIR'].$target_url)){
                         throw new Exception('复制文件失败');
@@ -108,18 +106,10 @@ class MediaAttachLog extends Model{
                 }
 
             }else{
-                $old_attachs=(new Query)
-                    ->select('*')
-                    ->from('media_attach')
-                    ->where(array('=','program_default_name',$program_default_name))
-                    ->andWhere(array('=','platform',$platform))
-                    ->all();
+                //没有新上传附件，保留以前的附件
+                $old_attachs=$class_mediaAttach->get_all($program_default_name,$platform);
                 if(count($old_attachs)>0){
-                    Yii::$app->db->createCommand()->update('media_attach',array(
-                        "media_id"=>$media_id
-                    ),array(
-                        "platform"=>$platform,"program_default_name"=>$program_default_name
-                    ))->execute();
+                   $class_mediaAttach->update_id($media_id,$program_default_name,$platform);
                 }
             }
             $transaction->commit();

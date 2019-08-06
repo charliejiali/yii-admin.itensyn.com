@@ -6,6 +6,12 @@ use yii\db\Query;
 use yii\base\Model;
 
 class MediaProgram extends Model{
+    /**
+     * 获取线上媒体剧目信息
+     * @param $program_default_name string 剧目原名
+     * @param $platform string 媒体平台
+     * @return array|bool
+     */
     public function get($program_default_name,$platform){
         return (new Query)
             ->select('*')
@@ -14,9 +20,23 @@ class MediaProgram extends Model{
             ->andWhere(array('=','platform',$platform))
             ->one();
     }
+
+    /**
+     * 删除线上媒体剧目
+     * @param $program_default_name string 剧目原名
+     * @param $platform string 媒体平台
+     * @return int
+     * @throws \yii\db\Exception
+     */
     public function delete($program_default_name,$platform){
         return Yii::$app->db->createCommand()->delete('media_program',array("program_default_name"=>$program_default_name,"platform"=>$platform))->execute();
     }
+    /**
+     * 增加线上媒体剧目
+     * @param $media array 剧目信息
+     * @return int
+     * @throws \yii\db\Exception
+     */
     public function add($media){
         return Yii::$app->db->createCommand()->insert('media_program',$media)->execute();
     }

@@ -7,6 +7,13 @@ use yii\base\Model;
 use yii\db\Query;
 
 class MediaInput extends Model{
+    /**
+     * 获取媒体待审核录入单列表
+     * @param $filters array 过滤条件
+     * @param bool $offset
+     * @param bool $pagecount
+     * @return array
+     */
     public function get_list($filters,$offset=false,$pagecount=false){
         $query=(new Query)
             ->select('*')
@@ -110,6 +117,14 @@ class MediaInput extends Model{
             ),array("media_id"=>$media_id))->execute();
         }
     }
+
+    /**
+     * 获取指定录入单的剧目
+     * @param $input_id string
+     * @param $offset string
+     * @param $pagecount string
+     * @return array
+     */
     public function get_programs($input_id,$offset,$pagecount){
         $query=(new Query)
             ->select('*')
