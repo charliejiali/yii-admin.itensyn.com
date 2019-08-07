@@ -418,7 +418,6 @@ class MediaController extends UserController{
                 $msg="无数据";
                 break;
             }
-//            $this_platform='';
             $class_mediaInput=new MediaInput;
             $class_mediaUser=new MediaUser;
 
@@ -428,10 +427,6 @@ class MediaController extends UserController{
                 if(!isset($media_data[$platform])){
                     $media_data[$platform]=array();
                 }
-//                if($this_platform!==$platform){
-//                    $media_data[$platform]=array();
-//                    $this_platform=$platform;
-//                }
                 $media_data[$platform][]=$program;
             }
 
@@ -495,6 +490,10 @@ class MediaController extends UserController{
         ));
     }
 
+    /**
+     * 更新腾信名称
+     * @throws \yii\db\Exception
+     */
     public function actionUpdateTensyn(){
         $r=0;
         $msg="";
@@ -537,7 +536,34 @@ class MediaController extends UserController{
            "r"=>$r,
            "msg"=>$msg
         ));
+    }
 
+    public function actionPreDelete(){
+        $r=0;
+        $msg="";
+        $post=Yii::$app->request->post();
 
+        $media_id=$post["id"];
+
+        $class_mediaProgram=new MediaProgram;
+        do{
+            $media_program=$class_mediaProgram->get_by_id($media_id);
+            if(!$media_program){
+                $msg="未能找到当前媒体剧目";
+                break;
+            }
+            $delete=$class_mediaProgram->pre_delete($media_id);
+            if(!$delete){
+                $msg="删除失败";
+                break;
+            }
+            $r=1;
+            $msg="删除成功";
+        }while(false);
+
+        echo json_encode(array(
+            "r"=>$r,
+            "msg"=>$msg
+        ));
     }
 }

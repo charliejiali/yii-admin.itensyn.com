@@ -114,4 +114,17 @@ class MediaProgram extends Model{
             "page_count"=>$page_count
         );
     }
+
+    /**
+     * 待删除剧目
+     * @param $media_id string
+     * @return int
+     * @throws \yii\db\Exception
+     */
+    public function pre_delete($media_id){
+        return Yii::$app->db->createCommand()->update('media_program',
+            array("status"=>3),
+            array("media_id"=>$media_id)
+        )->execute();
+    }
 }

@@ -130,9 +130,7 @@ $program_name=isset($filters["program_name"])?$filters["program_name"]:"";
                                 <th>本季预估播放量</th>
                                 <th>集数/期数</th>
                                 <th>本季预估单机播放量</th>
-<!--                                <th>海报</th>-->
-<!--                                <th>资源</th>-->
-<!--                                <th>视频</th>-->
+                                <th class="td-control" style="width:145px;">操作</th>
                             </tr>
                             </thead>
                             <tbody>
@@ -140,7 +138,6 @@ $program_name=isset($filters["program_name"])?$filters["program_name"]:"";
                             $upload_buttons=array("poster","resource","video");
                             foreach($list as $l){
                                 $media_id=$l["media_id"];
-//                                $attachs=Program::check_attach($media_id);
                                 ?>
                                 <tr>
                                     <td class="td-head">
@@ -164,12 +161,10 @@ $program_name=isset($filters["program_name"])?$filters["program_name"]:"";
                                     <td><?php echo $l["play1"];?></td>
                                     <td><?php echo $l["play3"];?></td>
                                     <td><?php echo $l["play6"];?></td>
-
-<!--                                    --><?php //foreach($upload_buttons as $b){?>
-<!--                                        <td>-->
-<!--                                            --><?php //echo $attachs[$b];?>
-<!--                                        </td>-->
-<!--                                    --><?php //} ?>
+                                    <td class="td-control">
+                                        <!-- <a id="edit_<?php echo $l["media_id"];?>" type="button" class="pure-btn btn-min">编辑</a> -->
+                                        <a id="delete_<?php echo $media_id;?>" type="button" class="pure-btn btn-min">删除</a>
+                                    </td>
                                 </tr>
                             <?php } ?>
                             </tbody>
@@ -181,6 +176,8 @@ $program_name=isset($filters["program_name"])?$filters["program_name"]:"";
             <br>
             <?= $this->render('../module/page',$page_info); ?>
         </div>
+    </div>
+</div>
         <?= $this->render('../module/footer'); ?>
 <style>
     #table-data .td-control, #table-control .td-control{
@@ -257,12 +254,23 @@ $program_name=isset($filters["program_name"])?$filters["program_name"]:"";
 //        var id=$(this).attr('id').split('_')[1];
 //        window.location.href='movie_edit.php?id='+id;
 //    });
-//    $('a[id^="delete"]').on('click',function(){
-//        $.post('ajax/program_delete.php',{media_id:$(this).attr('id').split('_')[1]},function(json){
-//            __BDP.alertBox("提示",json.msg);
-//            // if(json.r==1){window.location.reload();}
-//        },'json');
-//    });
+    // 删除
+   $('a[id^="delete"]').on('click',function(){
+       var id=$(this).attr('id').split('_')[1];
+       __BDP.alertBox("提示",'确定删除当前剧目？','','',function(){
+           $.post('/media/pre-delete',{id:id},function(json){
+               __BDP.alertBox("提示",json.msg,'','',function(){
+                   if(json.r==1){window.location.reload();}
+               });
+           },'json');
+       });
+
+       // $.post('/media/pre-delete',{id:$(this).attr('id').split('_')[1]},function(json){
+       //     __BDP.alertBox("提示",json.msg,'','',function(){
+       //         if(json.r==1){window.location.reload();}
+       //     });
+       // },'json');
+   });
 //    $('#add').on('click',function(){
 //        window.location.href='movie_edit.php';
 //    });
