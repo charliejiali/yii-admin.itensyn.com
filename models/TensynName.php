@@ -36,4 +36,18 @@ class TensynName extends Model{
         ))->execute();
     }
 
+    /**
+     * 更新腾信名称
+     * @param $program_default_name string 剧目原名
+     * @param $platform string 媒体平台
+     * @param $tensyn_name string 腾信名称
+     * @return int
+     * @throws \yii\db\Exception
+     */
+    public function update($program_default_name,$platform,$tensyn_name){
+        return Yii::$app->db->createCommand()->update('tensyn_program_name',
+            array("tensyn_name"=>$tensyn_name),
+            array("program_default_name"=>$program_default_name,"platform"=>$platform
+            ))->execute();
+    }
 }

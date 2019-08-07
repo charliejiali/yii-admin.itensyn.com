@@ -1,7 +1,6 @@
 <?php
 namespace app\controllers;
 
-use app\models\old;
 use PHPUnit\Framework\Exception;
 use Yii;
 use app\models\MediaInput;
@@ -12,8 +11,7 @@ use app\models\MediaAttachLog;
 use app\models\MediaAttach;
 use app\models\MediaUser;
 use app\models\Upload;
-
-use app\models\Pdf;
+use app\models\TensynName;
 
 class MediaController extends UserController{
     public $pageTitle="媒体数据";
@@ -54,6 +52,7 @@ class MediaController extends UserController{
             )
         ));
     }
+
     /**
      * 录入单审批页面
      * @return string
@@ -132,6 +131,7 @@ class MediaController extends UserController{
             )
         ));
     }
+
     /**
      * 审批剧目
      * @throws \yii\db\Exception
@@ -144,7 +144,11 @@ class MediaController extends UserController{
         $result=$class_mediaProgramLog->audit($id,$type);
         echo json_encode($result);
     }
-    // 审批录入单
+
+    /**
+     * 审批录入单
+     * @throws \yii\db\Exception
+     */
     public function actionInputAudit(){
         $post=Yii::$app->request->post();
         $input_id=$post["id"];
@@ -194,6 +198,7 @@ class MediaController extends UserController{
 
 
     // 补充媒体数据
+
     /**
      * 补充媒体数据页面
      * @return string
@@ -248,6 +253,7 @@ class MediaController extends UserController{
             )
         ));
     }
+
     /**
      * 上传excel
      */
@@ -288,6 +294,7 @@ class MediaController extends UserController{
             "msg"=>$msg
         ));
     }
+
     /**
      * 上传海报,资源包,视频
      * @throws \yii\db\Exception
@@ -327,6 +334,7 @@ class MediaController extends UserController{
             "path"=>$path
         ));
     }
+
     /**
      * 删除某个剧目及其所有附件
      * @throws \yii\db\Exception
@@ -370,6 +378,7 @@ class MediaController extends UserController{
 
         echo json_encode(array("r"=>$r,"msg"=>$msg));
     }
+
     /**
      * excel导出
      * @throws \PhpOffice\PhpSpreadsheet\Exception
@@ -389,6 +398,7 @@ class MediaController extends UserController{
         $class_upload=new Upload;
         $class_upload->export_excel($results,$media_fields,'media');
     }
+
     /**
      * 生成录入单
      * @throws \yii\db\Exception
@@ -450,7 +460,11 @@ class MediaController extends UserController{
     }
 
     // 剧目列表
-    // 剧目列表页面
+
+    /**
+     * 剧目列表页面
+     * @return string
+     */
     public function actionOnlineList(){
         $pageNavSub="22";
 
@@ -479,5 +493,51 @@ class MediaController extends UserController{
                 "page_count"=>$page_count
             )
         ));
+    }
+
+    public function actionUpdateTensyn(){
+        $r=0;
+        $msg="";
+        $post=Yii::$app->request->post();
+
+        $media_id=$post["id"];
+        $tensyn_name=$post["value"];
+
+        $class_mediaProgram=new MediaProgram;
+        $class_tensynName=new TensynName;
+
+        do{
+            $media_program=$class_mediaProgram->get_by_id($media_id);
+            if(!$media_program){
+                $msg="未能找到当前媒体剧目";
+                break;
+            }
+            $program_default_name=$media_program["program_default_name"];
+            $platform=$media_program["platform"];
+
+            $old_tensyn=$class_tensynName->get($program_default_name,$platform);
+            if(!$old_tensyn){
+                $msg="未能找到当前媒体剧目的腾信名称";
+                break;
+            }
+            if(trim($tensyn_name)===trim($old_tensyn["tensyn_name"])){
+                $msg="新名称与原名称一致";
+                break;
+            }
+            $re=$class_tensynName->update($program_default_name,$platform,$tensyn_name);
+            if(!$re){
+                $msg="更新失败";
+                break;
+            }
+            $r=1;
+            $msg="更新成功";
+        }while(false);
+
+        echo json_encode(array(
+           "r"=>$r,
+           "msg"=>$msg
+        ));
+
+
     }
 }

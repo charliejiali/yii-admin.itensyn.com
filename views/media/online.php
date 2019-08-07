@@ -269,23 +269,23 @@ $program_name=isset($filters["program_name"])?$filters["program_name"]:"";
 //    $('#export').on('click',function(){
 //        window.open('export/media_movie_list.php?'+$.param(params));
 //    });
-//    $('#start_date').datepicker({
-//        dateFormat:'yy-mm-dd'
-//    });
-//    $('#end_date').datepicker({
-//        dateFormat:'yy-mm-dd'
-//    });
-//
-//    $('#table-head').on('click','button[name="update"]',function(){
-//        var id=$(this).attr('id').split('_')[1];
-//        var value=$('#table-head').find('input[id="name_'+id+'"]').val();
-//
-//        $.post('ajax/program_update_tensyn_name.php',{id:id,value:value},function(json){
-//            __BDP.alertBox("提示",json.msg,'','',function(){
-//                if(json.r==1){window.location.reload();}
-//            });
-//        },'json');
-//    })
+   $('#start_date').datepicker({
+       dateFormat:'yy-mm-dd'
+   });
+   $('#end_date').datepicker({
+       dateFormat:'yy-mm-dd'
+   });
+    // 更新腾信名称
+   $('#table-head').on('click','button[name="update"]',function(){
+       var id=$(this).attr('id').split('_')[1];
+       var value=$('#table-head').find('input[id="name_'+id+'"]').val();
+
+       $.post('/media/update-tensyn',{id:id,value:value},function(json){
+           __BDP.alertBox("提示",json.msg,'','',function(){
+               if(json.r==1){window.location.reload();}
+           });
+       },'json');
+   })
 </script>
 
 </body>

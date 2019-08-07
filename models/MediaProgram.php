@@ -6,6 +6,13 @@ use yii\db\Query;
 use yii\base\Model;
 
 class MediaProgram extends Model{
+    public function get_by_id($media_id){
+        return (new Query)
+            ->select('*')
+            ->from('media_program')
+            ->where(array('=','media_id',$media_id))
+            ->one();
+    }
     /**
      * 获取线上媒体剧目信息
      * @param $program_default_name string 剧目原名
@@ -40,6 +47,14 @@ class MediaProgram extends Model{
     public function add($media){
         return Yii::$app->db->createCommand()->insert('media_program',$media)->execute();
     }
+
+    /**
+     * 获取媒体线上剧目列表
+     * @param $options array 过滤条件
+     * @param $offset
+     * @param $pagecount
+     * @return array
+     */
     public function get_list($options,$offset,$pagecount){
         $query=(new Query)
             ->select('*')
