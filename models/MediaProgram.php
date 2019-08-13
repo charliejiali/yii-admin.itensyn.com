@@ -30,13 +30,15 @@ class MediaProgram extends Model{
 
     /**
      * 删除线上媒体剧目
+     * @param $media_id string 媒体id
      * @param $program_default_name string 剧目原名
      * @param $platform string 媒体平台
      * @return int
      * @throws \yii\db\Exception
      */
-    public function delete($program_default_name,$platform){
-        return Yii::$app->db->createCommand()->delete('media_program',array("program_default_name"=>$program_default_name,"platform"=>$platform))->execute();
+    public function delete($media_id,$program_default_name,$platform){
+        Yii::$app->db->createCommand()->delete('media_program',array("program_default_name"=>$program_default_name,"platform"=>$platform))->execute();
+        Yii::$app->db->createCommand()->update('media_program_log',array("delete_status"=>1,"update_time"=>date("Y-m-d H:i:s")),array("media_id"=>$media_id))->execute();
     }
     /**
      * 增加线上媒体剧目
@@ -124,6 +126,48 @@ class MediaProgram extends Model{
     public function pre_delete($media_id){
         return Yii::$app->db->createCommand()->update('media_program',
             array("status"=>3),
+            array("media_id"=>$media_id)
+        )->execute();
+    }
+
+    public function delete_pass($media_id){
+        $program=$this->get_by_id($media_id);
+        $program_default_name=$program["program_default_name"];
+        $platform=$program["platform"];
+
+        // 删除媒体数据
+        $this->delete($media_id,$program_default_name,$platform);
+
+        // 删除媒体附件
+        $class_mediaAttach=new MediaAttach;
+        $class_mediaAttach->delete($program_default_name,$platform);
+
+        // 删除腾信数据
+        $class_tensynProgram=new TensynProgram;
+        $class_tensynProgram->delete($program_default_name,$platform);
+
+        // 删除腾信附件
+        $class_tensynAttach=new TensynAttach;
+        $class_tensynAttach->delete($program_default_name,$platform);
+
+        // 删除腾信名称
+        $class_tensynName=new TensynName;
+        $class_tensynName->delete($program_default_name,$platform);
+
+        // 删除线上剧目和得分
+        $class_program=new Program;
+        $class_program->delete($program_default_name,$platform);
+    }
+
+    /**
+     * 待删除审批——拒绝
+     * @param $media_id string 媒体剧目id
+     * @return int
+     * @throws \yii\db\Exception
+     */
+    public function delete_reject($media_id){
+        Yii::$app->db->createCommand()->update('media_program',
+            array("status"=>2),
             array("media_id"=>$media_id)
         )->execute();
     }

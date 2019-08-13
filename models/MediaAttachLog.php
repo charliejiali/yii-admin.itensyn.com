@@ -102,7 +102,9 @@ class MediaAttachLog extends Model{
                     if(!copy(Yii::$app->params['UPLOAD_DIR'].$current_url,Yii::$app->params['UPLOAD_DIR'].$target_url)){
                         throw new Exception('复制文件失败');
                     }
-//                unlink(Yii::$app->params['UPLOAD_DIR'].$current_url);
+                    if(file_exists(Yii::$app->params['UPLOAD_DIR'].$current_url)){
+                        unlink(Yii::$app->params['UPLOAD_DIR'].$current_url);
+                    }
                 }
 
             }else{

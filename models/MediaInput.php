@@ -112,7 +112,7 @@ class MediaInput extends Model{
                 "status"=>1,
                 "input_id"=>$input_id,
                 "user_id"=>$user_id,
-                "update_date"=>date("Y-m-d"),
+                "update_time"=>date("Y-m-d H:i:s"),
                 "type_status"=>$type_status
             ),array("media_id"=>$media_id))->execute();
         }

@@ -76,4 +76,22 @@ class MediaAttach extends Model{
             "platform"=>$platform,"program_default_name"=>$program_default_name,"type"=>$type
         ))->execute();
     }
+
+    /**
+     * 删除线上附件
+     * @param $program_default_name string 剧目原名
+     * @param $platform string 媒体平台
+     * @throws \yii\db\Exception
+     */
+    public function delete($program_default_name,$platform){
+        $attachs=$this->get_all($program_default_name,$platform);
+        if(count($attachs)){
+            foreach($attachs as $attach){
+                Yii::$app->db->createCommand()->delete('media_attach',array("program_default_name"=>$program_default_name,"platform"=>$platform))->execute();
+                if(file_exists(Yii::$app->params['UPLOAD_DIR'].$attach["url"])){
+                    unlink(Yii::$app->params['UPLOAD_DIR'].$attach["url"]);
+                }
+            }
+        }
+    }
 }

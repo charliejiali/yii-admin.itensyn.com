@@ -213,7 +213,7 @@ class MediaProgramLog extends Model{
         $transaction=Yii::$app->db->beginTransaction();
         try{
             foreach($ids as $media_id){
-                Yii::$app->db->createCommand()->update('media_program_log',array("pass_time"=>date("Y-m-d H:i:s"),"status"=>$status,"update_date"=>date("Y-m-d")),array("media_id"=>$media_id))->execute();
+                Yii::$app->db->createCommand()->update('media_program_log',array("pass_time"=>date("Y-m-d H:i:s"),"status"=>$status,"update_time"=>date("Y-m-d H:i:s")),array("media_id"=>$media_id))->execute();
                 Yii::$app->db->createCommand()->update('media_attach_log',array("status"=>$status),array("media_id"=>$media_id))->execute();
             }
             $transaction->commit();
@@ -241,14 +241,14 @@ class MediaProgramLog extends Model{
         $class_mediaProgram=new MediaProgram;
         $class_program=new Program;
 
-        $media["update_date"]=date("Y-m-d");
+        $media["update_time"]=date("Y-m-d H:i:s");
         $media_id=$media["media_id"];
         $program_default_name=$media["program_default_name"];
         $platform=$media["platform"];
 
         // 添加线上媒体数据
         $old=$class_mediaProgram->get($program_default_name,$platform);
-        if(!$old){
+        if($old){
             $class_mediaProgram->delete($program_default_name,$platform);
         }
         $class_mediaProgram->add($media);
@@ -313,25 +313,7 @@ class MediaProgramLog extends Model{
      * @return int
      */
     public function get_type_status($program){
-//        $class_system=new old;
-
-//        $media_fields=$class_system->get_media_fields();
-
-//        foreach($media_fields as $m){
-//            $valid_field[]=$m["field"];
-//        }
-//        $valid_field=array(
-//            "program_name","program_default_name","type","play_time",
-//            "platform","start_time","copyright","start_type","satellite","creator",
-//            "content_type","team","intro","play1","play3","play6"
-//        );
-
         $class_mediaProgram=new MediaProgram;
-        $media_fields=$this->get_media_fields();
-        $valid_field=array_keys($media_fields);
-        unset($valid_field["play2"]);
-        unset($valid_field["play4"]);
-        unset($valid_field["play5"]);
 
         $program_default_name=$program["program_default_name"];
         $platform=$program["platform"];
@@ -352,6 +334,12 @@ class MediaProgramLog extends Model{
             }
         }else{
             $status=1;
+            $media_fields=$this->get_media_fields();
+            unset($media_fields["play2"]);
+            unset($media_fields["play4"]);
+            unset($media_fields["play5"]);
+            $valid_field=array_keys($media_fields);
+
             foreach($valid_field as $v){
                 if(trim($program[$v])!=trim($online_program[$v])){
                     $status=2;

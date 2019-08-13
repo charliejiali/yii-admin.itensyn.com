@@ -111,7 +111,7 @@ $program_name=isset($filters["program_name"])?$filters["program_name"]:"";
                         <table class="pure-table pure-table-line pure-table-striped pure-table-hover" style="width: 3500px">
                             <thead>
                             <tr>
-                                <th class="td-head" style="width: 50px;"></th>
+                                <th class="td-head" style="width: 62px;"></th>
                                 <th class="td-head" style="width: 80px;">状态</th>
                                 <th class="td-head" style="width: 120px;">剧目名称</th>
                                 <th class="td-head" style="width: 170px;">腾信名称</th>

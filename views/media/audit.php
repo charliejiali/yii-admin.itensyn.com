@@ -141,7 +141,8 @@ function csubstr( $str, $start = 0, $length, $charset = "utf-8", $suffix = true 
             <?= $this->render('../module/page',$page_info); ?>
         </div>
         <?= $this->render('../module/footer'); ?>
-
+    </div>
+</div>
 <style>
     #table-data .td-control, #table-control .td-control {
         width: 150px;

@@ -538,6 +538,10 @@ class MediaController extends UserController{
         ));
     }
 
+    /**
+     * 删除剧目（进入待删除状态）
+     * @throws \yii\db\Exception
+     */
     public function actionPreDelete(){
         $r=0;
         $msg="";
@@ -562,6 +566,90 @@ class MediaController extends UserController{
         }while(false);
 
         echo json_encode(array(
+            "r"=>$r,
+            "msg"=>$msg
+        ));
+    }
+
+    // 删除审核页面
+
+    public function actionPreDeleteList(){
+        $pageTitle = "删除审核";
+        $pageNavId = 2;
+        $pageNavSub = 24;
+
+        $get = Yii::$app->request->get();
+
+        $class_mediaProgram=new MediaProgram;
+
+        $page=isset($get["p"])?intval($get["p"]):1;
+        $pagecount=isset($get["c"])?intval($get["c"]):10; //每页显示数量
+        $offset=($page-1)*$pagecount;
+
+        $get["status"]=3;
+
+        $result=$class_mediaProgram->get_list($get,$offset,$pagecount);
+
+        $list=$result["data"];
+        $list_count=$result["total_count"];
+        $page_count=$result["page_count"];
+
+        $system_year=array("2017","2018","2019","2020","2021");
+        $system_season=array("Q1","Q2","Q3","Q4");
+
+        return $this->render('pre_delete',array(
+            "pageNavSub"=>$pageNavSub,
+            "system_year"=>$system_year,
+            "system_season"=>$system_season,
+            "list"=>$list,
+            "page_info"=>array(
+                "page"=>$page,
+                "pagecount"=>$pagecount,
+                "list_count"=>$list_count,
+                "page_count"=>$page_count
+            )
+        ));
+    }
+    public function actionDeleteAudit(){
+        $post=Yii::$app->request->post();
+
+        $ids=$post["ids"];
+        $type=trim($post["type"]);
+
+        if($type==="yes"){
+            $function_name="delete_pass";
+        }else if($type==="no"){
+            $function_name="delete_reject";
+        }else{
+            return json_encode(array("r"=>0,"msg"=>"未能识别操作"));
+        }
+
+        $class_mediaProgram=new MediaProgram;
+
+
+        $transaction=Yii::$app->db->beginTransaction();
+        try{
+            if(strpos($ids,",")){
+                $media_ids=implode(",",$ids);
+                foreach($media_ids as $media_id){
+                    if(!$class_mediaProgram->get_by_id($media_id)){
+                        throw new Exception('未能找到媒体剧目');
+                    }
+                    call_user_func(array($class_mediaProgram,$function_name),$media_id);
+                }
+            }else{
+                call_user_func(array($class_mediaProgram,$function_name),$ids);
+            }
+            $transaction->commit();
+            $r=1;
+            $msg="操作成功";
+        }catch (Exception $e){
+            $transaction->rollBack();
+            $r=0;
+            $msg="操作失败";
+        }
+
+        return json_encode(array(
             "r"=>$r,
             "msg"=>$msg
         ));

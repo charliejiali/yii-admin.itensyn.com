@@ -50,4 +50,18 @@ class TensynName extends Model{
             array("program_default_name"=>$program_default_name,"platform"=>$platform
             ))->execute();
     }
+
+    /**
+     * 删除腾信名称
+     * @param $program_default_name string 剧目原名
+     * @param $platform string 媒体平台
+     * @return int
+     * @throws \yii\db\Exception
+     */
+    public function delete($program_default_name,$platform){
+        return Yii::$app->db->createCommand()->delete('tensyn_program_name',array(
+            "program_default_name"=>$program_default_name,
+            "platform"=>$platform
+        ))->execute();
+    }
 }

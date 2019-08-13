@@ -22,7 +22,7 @@ $pageNavId=$this->context->pageNavId;
             <a href="/media/input-list" class="pure-menu-link <?php if ($pageNavSub == 21) {echo " active";} ?>">待审核录入单</a>
             <a href="/media/online-list" class="pure-menu-link <?php if ($pageNavSub == 22) {echo " active";} ?>">剧 目 列 表</a>
             <a href="/media/upload-list" class="pure-menu-link <?php if ($pageNavSub == 23) {echo " active";} ?>">补充媒体数据</a>
-            <a href="movie_list_delete_audit.php" class="pure-menu-link <?php if ($pageNavSub == 24) {echo " active";} ?>">删 除 审 核</a>
+            <a href="/media/pre-delete-list" class="pure-menu-link <?php if ($pageNavSub == 24) {echo " active";} ?>">删 除 审 核</a>
             <a href="movie_list_delete.php" class="pure-menu-link <?php if ($pageNavSub == 25) {echo " active";} ?>">已删除剧目</a>
         </li>
 
